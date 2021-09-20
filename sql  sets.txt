@@ -1,0 +1,1104 @@
+SET00
+----------->
+
+create table employee(e_id varchar(5),name varchar(30),dep_id varchar(5),salary integer(6),managerid varchar(5),primary key(e_id));
+insert into employee values('A114', 'MARTIN TREDEAU', 'D01', 54497, 'A120'); 
+insert into employee values('A116', 'ROBIN WAYNE', 'D02', 20196, 'A187'); 
+insert into employee values('A178', 'BRUCE WILLS', 'D03', 66861, 'A298'); 
+insert into employee values('A132', 'PAUL VINCENT', 'D01', 94791, 'A120'); 
+insert into employee values('A198', 'TOM HANKS', 'D02', 16879, 'A187'); 
+insert into employee values('A120', 'TIM ARCHER', 'D01', 48834, 'A298'); 
+insert into employee values('A143', 'BRAD MICHAEL', 'D01', 24488, 'A120');
+insert into employee values('A187', 'ADAM JUSTIN', 'D02', 80543, 'A298'); 
+insert into employee values('A121', 'STUART WILLIAM', 'D02', 78629, 'A187'); 
+insert into employee values('A298', 'ROBERT SWIFT', 'D04', 27700, 'A298');
+insert into employee values('A176', 'EDWARD CANE', 'D01', 89176, 'A120'); 
+insert into employee values('A142', 'TARA CUMMINGS', 'D04', 99475, 'A187'); 
+insert into employee values('A130', 'VANESSA PARY', 'D04', 28565, 'A187'); 
+insert into employee values('A128', 'ADAM WAYNE', 'D05', 94324, 'A165'); 
+insert into employee values('A129', 'JOSEPH ANGELIN', 'D05', 44280, 'A165'); 
+insert into employee values('A165', 'NATASHA STEVENS', 'D05', 31377, 'A298');
+insert into employee values('A111', 'JOHN HELLEN', 'D01', 15380, 'A120');
+insert into employee values('A194', 'HAROLLD STEVENS', 'D02', 32166, 'A187'); 
+insert into employee values('A133', 'STEVE MICHELOS', 'D02', 61215, 'A187'); 
+insert into employee values('A156', 'NICK MARTIN', 'D03',50174, 'A178');
+insert into employee values('A141', 'TARA', 'D04', 99475, 'A187');
+
+create table dept(dept_id varchar(5),dep_name varchar(20),dep_manager varchar(20),primary key(dept_id));
+insert into dept values('D01', 'HEALTH', 'TIM ARCHER');
+insert into dept values('D02', 'COMMUNICATIONS', 'ADAM JUSTIN');
+insert into dept values('D03', 'PRODUCT', 'BRUCE WILLS'); 
+insert into dept values('D04', 'INSURANCE', 'ROBERT SWIFT'); 
+insert into dept values('D05', 'FINANCE', 'NATASHA STEVENS');
+
+1)Select the Employee with the top three salaries
+select* from(
+select*,
+dense_rank() over(order by Salary desc)as rnk from Employee)
+where rnk<=3;
+
+2)Select the Employee with the least salary
+select*,min(salary) from(
+select*,
+dense_rank() over(order by Salary desc)as rnk from Employee);
+
+3)Select the Employee who does not have a manager in the department table
+select* from(
+select a.*,b.* from Employee a Left join Dept b on a.Dep_Id = b.Dept_Id)
+where dep_manager is NULL;
+
+4)Select the Employee who is also a Manager
+select* from(
+Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+where name=dep_manager;
+
+5)Select the Empolyee who is a Manager and has least salary
+select*,min(salary) from(
+Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+where name=dep_manager;
+
+6)Select the total number of Employees in Communications departments
+select*,Count(name) from(
+Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+WHERE dep_name='COMMUNICATIONS';
+
+7)Select the Employee in Finance Department who has the top salary
+select*,max(salary) from
+(Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+group by(Dep_Name) having Dep_Name='FINANCE';
+
+8)Select the Employee in product depatment who has the least salary
+select*,min(Salary) from
+(Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+GROUP by dep_name having Dep_Name='PRODUCT';
+
+9)Select the count of Empolyees in Health with maximum salary
+select*,count(name),max(salary) from
+(Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+group by(Dep_Name) having Dep_Name='HEALTH';
+
+10)Select the Employees who report to Natasha Stevens
+select* from(
+Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+where dep_manager='NATASHA STEVENS';
+
+11)Display the Employee name,Employee count,Dep name,Dept manager in the Health department
+select*,count(name) from(
+select name,dep_name,dep_manager from(
+Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+where Dep_Name='HEALTH')
+group by name;
+
+12)Display the Department id,Employee ids and Manager ids for the Communications department
+select Dept_id,E_id,managerid from
+(Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+where Dep_Name='COMMUNICATIONS';
+
+13)Select the Average Expenses for Each dept with Dept id and Dept name
+select dept_id,Dep_Name,avg(Salary) from(
+Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+group by(Dep_Id);
+
+14)Select the total expense for the department finance
+select*,sum(salary) from(
+Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+group by(Dep_Name) having  Dep_Name='FINANCE';
+
+15)Select the department which spends the least with Dept id and Dept manager name
+select*,min(expense) from(
+select dept_id,dep_manager,sum(salary) as expense from(
+Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+group by dep_name);
+
+16)Select the count of Employees in each department
+select*,count(name) from(
+Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+group by(dep_name);
+
+17)Select the count of Employees in each department having salary <10000
+select*,count(name) from(
+Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+group by(dep_name) having Salary<10000;
+
+
+18)Select the total number of Employees in Dept id D04
+Select*,count(name) FROM
+(Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+group by(Dep_name) having dept_id='D04';
+
+19)Select all department details of the Department with Maximum Employees
+select*,max(total_emp) from(
+select dept_id,dep_name,dep_manager,count(name) as total_emp from
+(Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+group by(Dept_Id));
+
+
+20)Select the Employees who has Tim Cook as their manager
+select name from(
+Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
+where dep_manager='TIM COOK';
+
+-------------->
+set-01
+
+create table Hotel(Hotel_No varchar,Name varchar,City varchar,primary key(Hotel_No));
+insert into Hotel(Hotel_No,Name,City) values('H111','Empire Hotel','New York'),('H235','Park Place','New York'),
+('H432','Brownstone Hotel','Toronto'),('H498','James Plaza','Toronto'),('H193','Devon Hotel','Boston'),('H437','Clairmont Hotel','Boston');
+
+create table Room(Room_No int,Hotel_No varchar,Type varchar,Price float,primary key(Room_No),foreign key(Hotel_No) references Hotel(hotel_no));
+insert into Room(Room_No,Hotel_No,Type,Price) values(313,'H111','S',145.00),(412,'H111','N',145.00),(1267,'H235','N',175.00),(1289,'H235','N',195.00),
+(876,'H432','S',124.00),(898,'H432','S',124.00),(345,'H498','N',160.00),(467,'H498','N',180.00),(1001,'H193','S',150.00),(1201,'H193','N',175.00),
+(257,'H437','N',140.00),(223,'H437','N',155.00);
+
+create table Booking(Hotel_No varchar,Guest_No varchar,Date_From date,Date_To date,Room_No int,primary key(Guest_No),foreign key(Room_No) 
+references Room(Room_No),foreign key(Hotel_No) references Hotel(Hotel_No));
+insert into Booking(Hotel_No,Guest_No,Date_From,Date_To,Room_No) values('H111','G256','10-Aug-99','15-Aug-99',412),('H111','G367','18-Aug-99','21-Aug-99',412),
+('H235','G879','05-Sep-99','12-sep-99',1267),('H498','G230','15-Sep-99','18-Sep-99',467),('H498','G467','30-Nov-99','02-Dec-99',345),
+('H498','G567','03-Nov-99','05-Nov-99',345),('H193','G192','15-Nov-99','19-Nov-99',1001),('H193','G357','12-Sep-99','14-Sep-99',1001),
+('H193','G667','01-Oct-99','06-Oct-99',1201),('H437','G190','04-Oct-99','06-Oct-99',223);
+
+create table Guest(Guest_No varchar,Name varchar,City varchar,foreign key(Guest_No) REFERENCES Booking(Guest_No));
+insert into Guest(Guest_No,Name,City) values('G256','Adam Wayne','Pittsburg'),('G367','Tara Cummings','Baltimore'),('G879','Vanessa Parry','Pittsburg'),
+('G230','Tom Hancock','Philadelphia'),('G467','Robert Swift','Atlanta'),('G190','Edward Cane','Baltimore');
+
+-------->
+
+1)List full details of all hotels.
+select * from Hotel h inner join room r on h.hotel_no=r.hotel_no
+inner join Booking b on r.Room_No=b.Room_No
+inner join Guest g on g.guest_no=b.Guest_No;
+
+Hote_No	Name		City		Room_No	Hotel_	 Type	Price	2	Guest_	Date_From	Date_To		Room_No	Guest_	Name		City
+H111	Empire Hotel	New York	412	H111	N	145	H111	G256	10-Aug-99	15-Aug-99	412	G256	Adam Wayne	Pittsburg
+H111	Empire Hotel	New York	412	H111	N	145	H111	G367	18-Aug-99	21-Aug-99	412	G367	Tara Cummings	Baltimore
+H235	Park Place	New York	1267	H235	N	175	H235	G879	05-Sep-99	12-sep-99	1267	G879	Vanessa Parry	Pittsburg
+H498	James Plaza	Toronto		467	H498	N	180	H498	G230	15-Sep-99	18-Sep-99	467	G230	Tom Hancock	Philadelphia
+H498	James Plaza	Toronto		345	H498	N	160	H498	G467	30-Nov-99	02-Dec-99	345	G467	Robert Swift	Atlanta
+H437	Clairmont Hotel	Boston		223	H437	N	155	H437	G190	04-Oct-99	06-Oct-99	223	G190	Edward Cane	Baltimore
+
+2)List full details of all hotels in New York.
+select* from 
+(select * from Hotel h inner join room r on h.hotel_no=r.hotel_no
+inner join Booking b on r.Room_No=b.Room_No
+inner join Guest g on g.guest_no=b.Guest_No)
+where City='New York';
+
+H111	Empire Hotel	New York	412	H111	N	145	H111	G256	10-Aug-99	15-Aug-99	412	G256	Adam Wayne	Pittsburg
+H111	Empire Hotel	New York	412	H111	N	145	H111	G367	18-Aug-99	21-Aug-99	412	G367	Tara Cummings	Baltimore
+H235	Park Place	New York	1267	H235	N	175	H235	G879	05-Sep-99	12-sep-99	1267	G879	Vanessa Parry	Pittsburg
+
+3)List the names and cities of all guests, ordered according to their cities.
+select Name ,City from Guest order by City;
+
+Name		City
+Robert Swift	Atlanta
+Tara Cummings	Baltimore
+Edward Cane	Baltimore
+Tom Hancock	Philadelphia
+Adam Wayne	Pittsburg
+Vanessa Parry	Pittsburg
+
+
+4)List all details for non-smoking rooms in ascending order of price.
+SELECT* from Room where type='N' order by price;
+
+Room_No	Hotel_NO Type 	Price
+257	H437	 N	140
+412	H111	 N	145
+223	H437	 N	155
+345	H498	 N	160
+1267	H235	 N	175
+1201	H193	 N	175
+467	H498	 N	180
+1289	H235	 N	195
+
+
+5)List the number of hotels there are.
+select*,count(name) from Hotel group by name;
+
+Hotel_No   Name           City		Count(name)
+H432	Brownstone Hotel  Toronto	1
+H437	Clairmont Hotel	  Boston	1
+H193	Devon Hotel	  Boston	1
+H111	Empire Hotel	  New York	1
+H498	James Plaza	  Toronto	1
+H235	Park Place	  New York	1
+
+
+6)List the cities in which guests live. Each city should be listed only once.
+select city,count(city) from Guest group by city;
+
+City		count(city)
+Atlanta		1
+Baltimore	2
+Philadelphia	1
+Pittsburg	2
+
+
+7)List the average price of a room.
+select hotel_no,avg(Price) from Room group by Hotel_No;
+
+hotel_no 	avg(price)
+H111		145
+H193		162.5
+H235		185
+H432		124
+H437		147.5
+H498		170
+
+
+8)List hotel names, their room numbers, and the type of that room.
+select h.name,r.room_no,r.type from Hotel h inner join Room r on h.hotel_no=r.Hotel_No;
+
+name			room_no	type
+Empire Hotel		313	S
+Empire Hotel		412	N
+Park Place		1267	N
+Park Place		1289	N
+Brownstone Hotel	876	S
+Brownstone Hotel	898	S
+James Plaza		345	N
+James Plaza		467	N
+Devon Hotel		1001	S
+Devon Hotel		1201	N
+Clairmont Hotel		257	N
+Clairmont Hotel		223	N
+
+
+9)List the hotel names, booking dates, and room numbers for all hotels in New York.
+select h.name,b.Room_No,b.Date_From,b.Date_To from Hotel h inner join Booking b on h.Hotel_No=b.Hotel_No where h.City='New York';
+
+name		room_no	date_from	date_to
+Empire Hotel	412	10-Aug-99	15-Aug-99
+Empire Hotel	412	18-Aug-99	21-Aug-99
+Park Place	1267	05-Sep-99	12-sep-99
+
+10)What is the number of bookings that started in the month of September?
+SELECT Date_From,count(*) as total_Bookings from Booking where date_from like '%Sep%';
+
+date_from	total_bookings
+12-Sep-99	3
+
+11)List the names and cities of guests who began a stay in New York in August.
+select g.name,g.city,b.date_from,h.City from Guest g inner join Booking b on b.guest_no=g.guest_no 
+inner join Hotel h on h.hotel_no=b.Hotel_No where b.date_from LIKE '%AUG%' and h.city='New York';
+
+name		city		date_from	City
+Adam Wayne	Pittsburg	10-Aug-99	New York
+Tara Cummings	Baltimore	18-Aug-99	New York
+
+
+12)List the hotel names and room numbers of any hotel rooms that have not been booked.
+select Name,l.Room_No from(
+select* from Hotel h inner join Room r on h.Hotel_No=r.Hotel_No)as l
+left outer join Booking b on b.hotel_no=l.hotel_no where b.Hotel_No is null;
+
+Name			Room_No
+Brownstone Hotel	876	
+Brownstone Hotel	898	
+
+13)List the hotel name and city of the hotel with the highest priced room.
+select h.name,h.city,max(price) from Hotel h inner join Room r on r.hotel_no=h.Hotel_No;
+
+name		city		max(price)
+Park Place	New York	195
+
+
+14)List hotel names, room numbers, cities, and prices for hotels that have rooms with prices lower than the lowest priced room in a Boston hotel.
+select* from(
+select*,min(Price) from (
+select h.name,r.room_No,h.city,r.price from Hotel h,Room r where r.hotel_no=h.hotel_no)
+group by City);
+
+name			room_no	  city   price	min(price)
+Brownstone Hotel	876	Toronto	 124	124
+	
+15)List the average price of a room grouped by city.
+select*,avg(Price) from 
+(select h.city,r.Price from Hotel h inner join Room r on r.hotel_no=h.hotel_no)
+group by City
+
+city		price	avg(price)
+Boston		155	155
+New York	195	165
+Toronto		180	147
+------------>
+
+set02
+
+Create table Location (locationid number PRIMARY KEY, name varchar2(30), sunlight number, water number); 
+Insert into Location values(0,'East',28, 80); 
+Insert into Location values(1, 'North',17,84); 
+Insert into Location values(2, 'West',38,48); 
+Insert into Location values(3, 'South',45,66); 
+select* from Location;
+
+Create table gardener(gardenerid number primary key, name varchar2(30), age number); 
+Insert into gardener values(0,'Mother', 36); 
+Insert into gardener values(1,'Father', 38); 
+Insert into gardener values(2,'Tim', 15); 
+Insert into gardener values(3, 'Erin', 12); 
+SELECT* from gardener;
+
+Create table plant (plantid number primary key, name varchar2(30), sunlight number, water number, weight number);
+Insert into plant values(0,'Carrot', 26, 82, 08); 
+Insert into plant values(1, 'Beet', 44, 80, 04); 
+Insert into plant values(2, 'Corn', 44, 76, 26); 
+Insert into plant values(3, 'Tomato', 42, 80, 16); 
+Insert into plant values(4, 'Radish', 28, 84, 02); 
+Insert into plant values(5, 'Lettuce', 29, 85, 03); 
+SELECT* from plant;
+
+Create table planted(plantFK number, gardenerFK number, locationFK number, date1 date, seeds number, foreign key(plantFK) references plant(plantid), foreign key(gardenerFK) references gardener(gardenerid), foreign key(locationFK) references location(locationid)); 
+Insert into planted values(0, 0, 0 ,'18-APR-2012', 28); 
+Insert into planted values(0, 1, 1 , '14-APR-2012', 14); 
+Insert into planted values(1, 0, 2 , '18-APR-2012', 36); 
+Insert into planted values(2, 1, 3 , '14-APR-2012', 20); 
+Insert into planted values(2, 2, 2 , '19-APR-2012', 12); 
+Insert into planted values(3, 3, 3 , '25-APR-2012', 38); 
+Insert into planted values(4, 2, 0 , '30-APR-2012', 30); 
+Insert into planted values(5, 2, 0 , '15-APR-2012', 30); 
+select* from planted;
+
+
+Create table picked(plantFK number, gardenerFK number, locationFK number, date1 date, amount number, weight number, foreign key(plantFK) references plant(plantid), foreign key(gardenerFK) references gardener(gardenerid), foreign key(locationFK) references location(locationid));
+
+Insert into picked values(0, 2, 0 , '18-AUG-2012', 28, 2.32); 
+Insert into picked values(0, 3, 1 , '16-AUG-2012', 12, 1.02); 
+Insert into picked values(2, 1, 3 , '22-AUG-2012', 52, 12.96); 
+Insert into picked values(2, 2, 2 , '28-AUG-2012', 18, 4.58); 
+Insert into picked values(3, 3, 3 , '22-AUG-2012', 15, 3.84); 
+Insert into picked values(4, 2, 0 , '16-JUL-2012', 23, 0.52); 
+select* from picked;
+
+1)Write a valid SQL statement that calculates the total weight of all corn cobs that were picked from the garden
+select plantfk,sum(weight) from picked where plantFk=(select plantid from plant where name='Corn');
+
+plantfk		sum(weight)
+2	 	17.54
+
+2)For some reason Erin has change his location for picking the tomato to North. Write the corresponding query.
+update picked set locationfk=1 where plantfk=3 and gardenerfk=3;
+select* from picked
+
+plantfk	garden	loc	date1		amount	weight
+0	2	0	18-AUG-2012	28	2.32
+0	3	1	16-AUG-2012	12	1.02
+2	1	3	22-AUG-2012	52	12.96
+2	2	2	28-AUG-2012	18	4.58
+3	3	1	22-AUG-2012	15	3.84
+4	2	0	16-JUL-2012	23	0.52
+
+3)Insert a new column 'Exper' of type Number (30) to the 'gardener' table which stores Experience of the of person. How will you modify this to varchar2(30).
+alter table gardener add 'Exper' int(30);
+select* from gardener;
+alter table gardener modify Exper varchar2(30);
+
+gardenid name	age	Exper
+0	 Mother	36	NULL
+1	 Father	38	NULL
+2	 Tim	15	NULL
+3	 Erin	12	NULL
+
+4)Write a query to find the plant name which required seeds less than 20 which plant on 14-APR
+select name from plant where plantid=(select plantFK from planted where seeds<20 and date1='14-APR-2012') ;
+
+name
+Carrot
+
+5)List the amount of sunlight and water to all plants with names that start with letter 'c' or letter 'r'.
+select name,sunlight,water from plant where name like 'c%' or 'r%';
+
+name	sunlight	water
+Carrot	26		82
+Corn	44		76
+
+6)Write a valid SQL statement that displays the plant name and the total amount of seed required for each plant that were plant in the garden. The output 
+should be in descending order of plant name.
+select name,sum(seeds) from(select name,seeds from plant inner join planted where plantFK=plantid) group by name ;
+
+name	sum(seeds)
+Beet	36
+Carrot	42
+Corn	32
+Lettuce	30
+Radish	30
+Tomato	38
+
+7)Write a valid SQL statement that calculates the average number of items produced per seed planted for each plant type.
+select*,sum(amount)/sum(seeds) AS avg_Items from (select p.plantFK,amount,seeds from planted p inner join picked pi where p.plantFK=pi.plantFK)
+group by plantFK;
+
+plantfk	amount	seeds	avg_Items
+0	28	14	0
+2	52	12	2
+3	15	38	0
+4	23	30	0
+
+8)Write a valid SQL statement that would produce a result set like the following:
+
+ name |  name  |    date    | amount 
+------|--------|------------|-------- 
+ Tim  | Radish | 2012-07-16 |     23 
+ Tim  | Carrot | 2012-08-18 |     28 
+
+select* from(
+SELECT g.name,k.name,k.date1,k.amount from 
+(SELECT p1.gardenerFK,p.plantid,p.name,p1.date1,p1.amount FROM plant p inner join picked p1 on p1.plantFK=p.plantid)as k
+inner join gardener g on g.gardenerid=k.gardenerFK)AS n where n.name='Tim' and n.amount>20 order by amount ;
+
+name	name1	date1		amount	resCol	resCol1
+Tim	Radish	16-JUL-2012	23	6	5
+Tim	Carrot	18-AUG-2012	28	1	1
+
+=================================================================================================================================
+
+create table employee(emp_id integer,emp_name char(30),emp_sal integer,dept_id integer)
+create table department(dept_id integer,dept_name char(20) references dept_id)
+drop table employee
+insert into employee values(10,'Vivek',2000,1),(20,'Raj',3000,1),(30,'Vinoth',4000,1),
+(40,'Abhishek',5000,2),(50,'Divya',6000,2),(60,'Chitra',7000,3) 
+select* from employee
+insert into department values(1,'IT'),(2,'Admin'),(4,'HR')  
+select* from department
+
+1)Fetch all the Deptid,DeptName from department table & Corresponding Department salary using Employee  Table. If Any department is not available in 
+employee table then assign salary as 0.
+
+select d.dept_id,d.dept_name,
+case when e.emp_sal is NULL then 0
+else e.emp_sal
+end as salary
+from employee e right join department d on d.dept_id=e.dept_id;
+op
+dept_id		dept_name	salary
+1		IT		4000
+1		IT		3000
+1		IT		2000
+2		Admin		6000
+2		Admin		5000
+4		HR		0
+
+2)Fetch all the Deptid &  aggregate all the salary for the respective dept id from Employee table & Corresponding Department name using department Table. 
+If Any department is not available in department table then assign departname as 'Others'
+select k.dept_id,sum(k.emp_sal)as total,
+case when k.dept_name is NULL then 'Others' 
+else k.dept_name
+end as dept
+from(
+select d.dept_id,d.dept_name,e.emp_sal from employee e right join department d on d.dept_id=e.dept_id
+union
+select e.dept_id,d.dept_name,e.emp_sal from employee e left join department d on d.dept_id=e.dept_id)k
+group by k.dept_name order by k.dept_id;
+op
+dept_id	salary	name
+1	9000	IT
+2	11000	Admin
+3	7000	Others
+4	null	HR
+
+create table employee1(emp_id integer,emp_name char(20),manager_id integer,salary integer)
+insert into employee1 values(1,'Vivek',8,11000),(2,'Raj',1,2000),
+(3,'Vinoth',1,3000),(4,'Abhishek',2,5000),(5,'Divya',3,6000),(6,'Chitra',3,2350),(7,'Devi',3,2500),
+(8,'Aarthi',4,2700);
+select* from employee1
+
+3)Fetch all the Emp_id,Emp_name,Manager_ID and salary who is getting between 2700 and 10000
+Note: Don't use  between
+select emp_id,emp_name,manager_id,salary from employee1 where salary>=2700 and salary<=10000;
+op
+emp_id	emp_name	manager_id 	salary
+3	Vinoth		1		3000
+4	Abhishek	2		5000
+5	Divya		3		6000
+8	Aarthi		4		2700
+
+4)Fetch all the Manager_ID,Manager_Name and Sum of the employee salary who is reporting to that manager
+Note: Don't use  between
+select manager_id,sum(salary) from employee1 group by manager_id order by manager_id;
+op
+manager_id	sum(salary)
+1		5000
+2		5000
+3		10850
+4		2700
+8		11000
+
+create table employee2(emp_id integer,emp_name char(20));
+insert into employee2 values (1,'RajeshKumar'),(2,'UdhayaRaja'),(3,'Abhishek'),
+(4,'MukeshKumar'),(5,'VijayaprakashSingh'),(6,'Divyashree');  
+select* from employee2
+
+5)Fetch all the emp_id & derv_Emp_Name 
+*  Derv_emp_name will be from 4th character till end of the chanracter from emp_name
+Note: Don’t use regular expression
+select emp_id, substring(emp_name,4)as derv_Emp_Name from employee2 
+op
+emp_id   derv_Emp_Name
+1	 eshKumar
+2	 ayaRaja
+3	 ishek
+4	 eshKumar
+5	 ayaprakashSingh
+6	 yashree
+12	 it
+
+6)Fetch all the emp_id & derv_Emp_Name 
+*  Derv_emp_name will be from first occurance of 'h' till  end of the chanracter from emp_name
+select emp_id,substring(emp_name,position('h' in emp_name))as name from employee2
+op
+emp_id	name
+1	hKumar
+2	hayaRaja
+3	hishek
+4	hKumar
+5	hSingh
+6	hree
+12	
+
+7)Fetch emp_id,Emp_name & Salary who is getting 2nd maximum salary
+select k.emp_id,k.emp_name,k.salary from(
+select emp_id,emp_name,salary,dense_rank() over(order by salary desc)cnt from employee1)k where k.cnt=2  
+op
+id	name	salary
+5	Divya	6000
+
+8)Fetch emp_id,Emp_name & Salary who is getting top 3 salary
+select k.emp_id,k.emp_name,k.salary from(
+select emp_id,emp_name,salary,dense_rank() over(order by salary desc)cnt from employee1)k where k.cnt<4  
+op
+
+	emp_id	emp_name	salary
+	1	Vivek		11000
+	5	Divya		6000
+	4	Abhishek	5000
+
+
+create table employee3(emp_id integer,emp_name char(20),dept_name char(20),salary integer)
+insert into employee3 values( 1,'Vivek','IT',2000),(2,'Raj','Admin',3500),
+(3,'Vinoth','HR',4800),(4,'Abhishek','IT',5700),
+(5,'Divya','ITES',3000),(6,'Chitra','HR',5800),
+(7,'Devi','Admin',3200)
+select* from employee3
+
+9)Fetch emp_id,Emp_name,Dept_name & Salary who is getting salary greater than 3000 in 'IT' and  salary greater than 3400 in 'Admin'
+select emp_id,emp_name,dept_name,salary from employee3 where dept_name='IT' and salary>3000 or
+salary>3400 and dept_name='Admin'
+op
+id	name		dept	sal
+2	Raj		Admin	3500
+4	Abhishek	IT	5700
+
+10)Fetch emp_id,Emp_name,Dept_name & Salary who is having sring 'J' in emp_name.
+select emp_id,emp_name,dept_name,salary from employee3 where emp_name like '%j';
+op
+emp_id	emp_name  dept_name	salary
+2	Raj	  Admin		3500
+
+11)Fetch emp_id,Emp_name,Dept_name & Salary who is having any of string 'J','N','M' in emp_name.
+select emp_id,emp_name,dept_name,salary from employee3 where emp_name like '%j' or
+emp_name like '%n' or emp_name like '%m'
+op
+emp_id		emp_name	dept_name	salary
+2		Raj		Admin		3500
+
+12)Fetch emp_id,Emp_name,Dept_name & Salary who is having all of string 'B','H','E' in emp_name.
+select emp_id,emp_name,dept_name,salary from employee3 where emp_name like '%b' and
+emp_name like '%h' and emp_name like '%e'
+
+create table employee5 (emp_id integer,emp_name char(20),desc_id integer,place_id integer,proj_id 
+integer)
+insert into employee5 values(1,'Vijaykumar',10,1,3),(2,'Raja',20,3,4),
+(3,'Abhisheksingh',10,4,5),(4,'Santosh',30,2,1),(5,'Kribakaran',20,3,2),
+(6,'Divya',40,5,3),(7,'Suganya',10,3,4),(8,'Shalini',20,2,2),(9,'Avantika',30,1,5),
+(10,'Ajay',50,6,8),(11,'Tamilselvan',60,7,6),(12,'Vinodha',70,6,7),(13,'Karthick',60,5,2),
+(14,'Sanjay',70,6,5),(15,'Meera',60,8,7)
+
+create table designation(desc_id integer,desc_name char(10),role_typ char(20))
+insert into designation values(10,'ASE','DEVELOPER'),(20,'SE','DEVELOPER'),
+(30,'SSE','DEVELOPER'),(40,'TL','LEAD'),(50,'AM','LEAD'),(100,'SM','MANAGER')
+
+create table place(place_id integer,place_desc char(15),place_typ char(20))
+insert into place values(1,'Chennai','Offshore'),(2,'Bangalore','Offshore'),
+(3,'Hyderabad','Offshore'),(4,'Mexico','Nearshore'),(5,'Newyork','Onshore'),
+(10,'Canada','Onshore')
+
+create table project(proj_id integer,proj_name char(20))
+insert into project values(1,'Cigna'),(2,'ASG'),(3,'Pepsi'),
+(4,'Microsoft'),(5,'Amazon'),(10,'Flipkart')
+
+13) Fetch EMP_ID,EMP_NAME,DESC_NAME,PLACE_DESC,PROJ_NAME
+EMP_ID
+EMP_NAME 
+DESC_NAME ---> If Designation Name is not available then show 'Unknown Designation', 
+If Designation Name  is available but if Role Type is Lead then Show 'TEAM_LEAD'  otherwise populate with out any conversion
+PLACE_DESC -- >If  Place Description is not avaible then show 'Others' , If  Place Description is available but if Place Type is newyork  then show 'USA'
+PROJ_NAME --> Designation is not avaible in Department table then show 'Unknown Project'
+
+select e.emp_id,e.emp_name,
+case when d.desc_name is null then 'Unknown Designation'
+when d.role_typ='lead' then 'TEAM_LEAD' else ' ' end as desc_name,
+case when p.place_desc is null then 'Others' 
+when p.place_typ='Newyork' then 'USA' else p.place_desc end as place_desc,
+p1.proj_name from employee5 e left join designation d on
+e.desc_id=d.desc_id left join place p on p.place_id=e.place_id left join project p1 on
+p1.proj_id=e.proj_id
+OP
+1	Vijaykumar	 	 	Chennai		Pepsi
+2	Raja	 		 	Hyderabad	Microsoft
+3	Abhisheksingh	 	 	Mexico		Amazon
+4	Santosh	 		 	Bangalore	Cigna
+5	Kribakaran	 	 	Hyderabad	ASG
+6	Divya	     TEAM_LEAD	 	Newyork	Pepsi
+7	Suganya	 		 	Hyderabad	Microsoft
+8	Shalini	 		 	Bangalore	ASG
+9	Avantika	 	 	Chennai		Amazon
+10	Ajay	     TEAM_LEAD	 	Others	
+11	Tamilselvan  Unknown Des 	Others	
+12	Vinodha	     Unknown Des 	Others	
+13	Karthick     Unknown Des	Newyork		ASG
+14	Sanjay	     Unknown Des	Others		Amazon
+15	Meera	     Unknown Des	Others	
+
+14)Fetch EMP_ID,EMP_NAME,PROJECT_ROLE
+List all the employees from the employee table 
+EMP_ID
+EMP_NAME 
+PROJECT_ROLE ---> If he is a 'DEVELOPER' and working in 'OFFSHORE' then show he is a 'TEAMMEMBER' , 
+If he is a 'DEVELOPER' and working in 'NEARSHORE' then show he is a 'TEAMLEAD', If he is a 'DEVELOPER' and working in 'ONSHORE' then show he is a 'BA',
+If he is a 'LEAD' and working in 'ONSHORE' then show he is a 'SCRUMMASTER', IF he has Some Designation or Working in some place then Show as 'CONTRACTER' 
+Else Show ""SHADOW'"
+select e.emp_id,e.emp_name,
+case when d.role_typ='developer' and p.place_typ='offshore' then 'Team Member'
+when d.role_typ='developer' and p.place_typ='nearshore' then 'Team Lead'
+when d.role_typ='developer' and p.place_typ='onshore' then 'BA'
+when d.role_typ='lead' and p.place_typ='onshore' then 'Scrum master'
+when d.role_typ like '%' or p.place_typ like '%' then 'Contracter'
+else 'Shadow' end as Project_role
+from employee5 e left join designation d on e.desc_id=d.desc_id 
+left join place p on p.place_id=e.place_id
+op
+1	Vijaykumar	Team Member
+2	Raja		Team Member
+3	Abhisheksingh	Team Lead
+4	Santosh		Team Member
+5	Kribakaran	Team Member
+6	Divya		Scrum master
+7	Suganya		Team Member
+8	Shalini		Team Member
+9	Avantika	Team Member
+10	Ajay		Contracter
+11	Tamilselvan	Shadow
+12	Vinodha		Shadow
+13	Karthick	Contracter
+14	Sanjay		Shadow
+15	Meera		Shadow
+
+15)Fetch DESC_NAME,PLACE_DESC,PROJ_NAME
+List how mony employess are working as a DEVELOPER in respective PLACE and PROJECT. Also SHOW rest of count as OTHERS in all the fields
+select d.role_typ,p.place_desc,pr.proj_name,
+case when d.role_typ='developer' then count(d.role_typ)
+else 'others' end as 'cnt' from employee5 e right join designation d
+on d.desc_id=e.desc_id inner join place p on p.place_id=e.place_id inner join project pr
+on pr.proj_id=e.proj_id group by d.role_typ
+op
+role_typ	place_desc	prooj_name	cnt
+DEVELOPER	Bangalore	Cigna		8
+LEAD		Newyork		Pepsi		others
+
+16)Fetch EMPLOYEE_NAME,DESC_NAME,PLACE_DESC,PROJ_NAME
+Fetch all the Employee name, Designation , Place and project from respective tables if there is any null in respective fields then 
+show it as OTHERS in those null Fields
+select case when e.emp_name is null then 'others' else e.emp_name end as emp_name,
+case when d.desc_name is null then 'others' else d.desc_name end as desc_name,
+case when p.place_desc is null then 'others' else p.place_desc end as place_desc,
+case when pr.proj_name is null then 'others' else pr.proj_name end as proj_name
+from employee5 e left join designation d
+on d.desc_id=e.desc_id left join place p on p.place_id=e.place_id left join project pr
+on pr.proj_id=e.proj_id 
+op
+Vijaykumar	ASE	Chennai		Pepsi
+Raja		SE	Hyderabad	Microsoft
+Abhisheksingh	ASE	Mexico		Amazon
+Santosh		SSE	Bangalore	Cigna
+Kribakaran	SE	Hyderabad	ASG
+Divya		TL	Newyork		Pepsi
+Suganya		ASE	Hyderabad	Microsoft
+Shalini		SE	Bangalore	ASG
+Avantika	SSE	Chennai		Amazon
+Ajay		AM	others		others
+Tamilselvan	others	others		others
+Vinodha		others	others		others
+Karthick	others	Newyork		ASG
+Sanjay		others	others		Amazon
+Meera		others	others		others
+
+create table customer(customer_id integer,cust_name char(15),city char(15),
+priority_num integer,salesman_id integer,purchased_Amount integer)
+insert into customer values(10,'James','Chennai',1,1,10000),
+(20,'Ricky','Chennai',1,3,8000),(30,'Ramu','Bangalore',1,2,8000),
+(40,'Jyothi','Hyderabad',2,3,9000),(50,'Amaran','Chennai',1,4,3000),
+(60,'Akilan','Hyderabad',2,3,6000),(70,'Arun','Chennai',2,5,5000),
+(80,'Dinesh','Mumbai',2,4,6000)
+
+create table salesman(salesman_id integer,salesman_name char(15),city  char(10),
+sales_manager_id integer,monthly_target integer)
+insert into salesman values(1,'John','Chennai',2,10000),
+(2,'Abraham','Bangalore',4,21000),(3,'Raju','Hyderabad',4,21000),
+(4,'Srinath','Mumbai',5,9000),(5,'Vijay','Chennai',6,4000),
+(6,'Balaji','Hyderabad',6,15000)
+
+17)Fetch Salesman_Name, Cust_Name, Customer_city,Salesman_City.Show only the customer and salesman whole belong to the different City
+***************
+select s.salesman_name,c.cust_name,c.city,s.city from salesman s left join customer c
+on c.salesman_id=s.salesman_id
+union
+select s.salesman_name,c.cust_name,c.city,s.city from salesman s right join customer c
+on c.salesman_id=s.salesman_id 
+
+18)Fetch Salesman_Name, City, Monthly_target, Amount_purchase_by_Customer 
+Show only the Sales Man who achieved the monthly Target
+Sum of Amount_purchase_by_Customer -- Amount purchased by corresponding customer
+select k.salesman_name,k.city,k.monthly_target,k.tot from(
+select s.salesman_name,s.city,s.monthly_target,c.purchased_amount,sum(c.purchased_amount)as tot 
+from salesman s inner join
+customer c on c.salesman_id=s.salesman_id group by s.salesman_name)k
+where k.tot>=k.monthly_target
+op
+salesman_name	city	   monthly_target 	tot
+John		Chennai	   10000	 	10000
+Raju		Hyderabad   21000	 	23000
+Srinath		Mumbai	    9000	 	9000
+Vijay		Chennai	    4000	 	5000
+
+19)Fetch Cust_Name, City,Priority_num,Purchased_amount
+Show only the customer information who is top two  purchased more in their respective priority
+Sum of Amount_purchase_by_Customer -- Amount purchased by corresponding customer
+**************
+select cust_name,city,priority_num,purchased_amount from customer
+
+20)Fetch Salesman_Name, City, Amount_purchase_by_Customer 
+Show only the Sales Man who  Amount_purchase_by_Customer is less than the avg monthly target of all sales person
+Sum of Amount_purchase_by_Customer -- Amount purchased by corresponding customer
+select k.* from
+(select s.salesman_name,s.city,c.purchased_amount,avg(s.monthly_target)as avg_target from customer c 
+inner join salesman s on s.salesman_id=c.salesman_id group by s.salesman_name)k
+ where k.purchased_amount<avg_target
+op
+salesman_name   city     purchased_amount	 avg_target	
+Raju		Hyderabad	8000		21000.0000
+Abraham		Bangalore	8000		21000.0000
+Srinath		Mumbai		3000		9000.0000
+
+21)Fetch  Sales_Manager_id, Salesman_Name,Manager Monthly_target,  Amount_purchase_by_Customer 
+Show only the Sales Man who's manager is achieved the monthly Target based on his reportees purchase detail
+Sum of Amount_purchase_by_Customer -- Amount purchased by customer which is sold by it reportees
+
+select k.salesman_name,k.monthly_target,k.total from( 
+select s.sales_manager_id,s.salesman_name,s.monthly_target,sum(c.purchased_amount) over(
+partition by(s.sales_manager_id))as total
+from salesman s left join customer c on s.salesman_id=c.salesman_id)k
+where k.monthly_target<=k.total
+op
+salesman_name	monthly_target  total
+John		10000		10000
+Abraham		21000		31000
+Raju		21000		31000
+Raju		21000		31000
+Raju		21000		31000
+Srinath		9000		9000
+Srinath		9000		9000
+Vijay		4000		5000
+
+create table student(student_id integer,student_name char(10),student_detail_id integer)
+insert into student values(1,'Ajay',1),(2,'Ramesh',2),(3,'Shriram',3),
+(4,'Gopi',4),(5,'Kalai',5),(6,'Vinoth',6)
+
+create table student_details(student_detail_id integer,city_id integer,class_id integer,
+start_date date,end_date date)
+insert into student_details values(1,1,2,'2018-04-01','2019-03-31'),
+(1,1,3,'2019-04-01','9999-12-31'),(2,2,1,'2018-04-01','2019-03-31'),
+(2,3,2,'2019-04-01','9999-12-31'),(3,2,1,'2017-04-01','2018-03-31'),
+(3,3,2,'2018-04-01','2019-03-31'),(3,1,3,'2019-04-01','9999-12-31'),
+(4,2,1,'2018-04-01','2019-03-31'),(4,3,2,'2019-04-01','9999-12-31'),
+(5,1,2,'2019-04-01','9999-12-31'),(6,2,3,'2019-04-01','9999-12-31')
+
+create table city(city_id integer,city_name char(10))
+insert into city values(1,'Chennai'),(2,'Bangalore'),(3,'Mumbai')
+
+create table class(class_id integer,class char(10),classroom_num integer,
+start_date date,end_date date)
+insert into class values(1,'10th',256,'2017-04-01','2018-10-31'),
+(1,'10th',257,'2018-01-11','2019-09-30'),(1,'10th',258,'2019-01-10','9999-12-31'),
+(2,'11th',301,'2017-04-01','2018-03-31'),(2,'11th',310,'2018-04-01','2019-10-31'),
+(2,'11th',320,'2019-01-11','9999-12-31'),(3,'12th',356,'2017-04-01','2018-10-31'),
+(3,'12th',360,'2018-01-11','2019-09-30'),(3,'12th',371,'2019-01-10','9999-12-31')
+
+22)Fetch All Student_name,City_name,Class_Name
+Show only the initial information of all the student in respective Field
+select distinct s.student_name,c.city_name,cl.class from student s left join student_details st on 
+s.student_detail_id=st.student_detail_id inner join city c on c.city_id=st.city_id inner join
+class cl on cl.class_id=st.class_id 
+op
+name	City_name	Class_Name
+Gopi	Bangalore	10th
+Shriram	Bangalore	10th
+Ramesh	Bangalore	10th
+Kalai	Chennai		11th
+Gopi	Mumbai		11th
+Shriram	Mumbai		11th
+Ramesh	Mumbai		11th
+Ajay	Chennai		11th
+Vinoth	Bangalore	12th
+Shriram	Chennai		12th
+Ajay	Chennai		12th
+
+23)Fetch All Student_name,City_name,Class_Name,Classroom_num
+Show only the information of all the student where he stands as of today'S date
+******************************
+
+24)Fetch All Student_name,City_name
+Show only the information of all the student who studied in Chennai or Classroom Number (301,310,320)
+select s.student_name,c.city_name from student s left join 
+student_details st on s.student_detail_id=st.student_detail_id inner join city c
+on c.city_id=st.city_id inner join class cl on cl.class_id=st.class_id where c.city_name='chennai'
+or cl.classroom_num in(301,310,320)
+op
+Student_name    City_name
+Kalai		Chennai
+Gopi		Mumbai
+Shriram		Mumbai
+Ramesh		Mumbai
+Ajay		Chennai
+Kalai		Chennai
+Gopi		Mumbai
+Shriram		Mumbai
+Ramesh		Mumbai
+Ajay		Chennai
+Kalai		Chennai
+Gopi		Mumbai
+Shriram		Mumbai
+Ramesh		Mumbai
+Ajay		Chennai
+Shriram		Chennai
+Ajay		Chennai
+Shriram		Chennai
+Ajay		Chennai
+Shriram		Chennai
+Ajay		Chennai
+
+
+insert into author values('AUT001','William Norton','UK','Cambridge','PB01'),
+('AUT002','C. J. Wilde','USA','San Francisco','PB04'),
+('AUT003','John Betjeman Hunter','RUSSIA','Moscow','PB01'),
+('AUT004','John Betjeman Hunter','CANADA','Toronto','PB03'),
+('AUT005','S.B.Swaminathan','INDIA','Delhi','PB01'),
+('AUT006','Butler Andre','UK','London','PB03'),
+('AUT007','E. Howard','EUROPE','Berlin','PB03'),
+('AUT008','Andrew Jeff','GERMANY','Berlin','PB02'),
+('AUT009','Drek Tailor','Australia','Melbourne','PB01'),
+('AUT010','Mary Coffing','USA','New Jersy','PB04')
+
+create table publish(publish_id char(10),publish_name char(25),publish_city char(15),
+publish_start_date date,branches integer)
+insert into publish values('PB01','Jex Max Publication','BERLIN','1929-04-21',10),
+('PB02','Summer Night Publication','CANADA','2019-08-31',25),
+('PB03','Novel Publisher Ltd','LONDON','2018-08-10',11),
+('PB04','Mark Book Sales','NEW JERSY','2008-05-24',9)
+
+create table trip(trip_id char(10),trip_source char(10),trip_dest char(10),
+trip_start_time time,trip_end_time time,trip_cost integer,dynamic_fare char(1))
+insert into trip values('TP01','CHN','BGL','13:40:00','15:40:00',3500,'Y'),
+('TP02','BGL','MUM','18:20:00','19:20:00',6700,'Y'),
+('TP03','CHN','HYD','09:45:00','11:10:00',3000,'Y'),
+('TP04','HYD','BGL','12:20:00','13:25:00',2700,'N'),
+('TP05','MUM','NDL','23:00:00','01:25:00',4500,'Y'),
+('TP06','BGL','NDL','19:40:00','22:10:00',5000,'N'),
+('TP07','NDL','MUM','16:45:00','17:50:00',6000,'Y'),
+('TP08','MUM','BGL','20:20:00','23:45:00',5000,'N'),
+('TP09','NDL','HYD','11:25:00','13:45:00',3000,'N'),
+('TP10','HYD','CHN','20:30:00','22:20:00',4500,'Y'),
+('TP11','BGL','CHN','23:45:00','01:05:00',3900,'Y')
+
+create table stats(stats_id integer,month integer,year integer,temp_fare float,rain_inch float)
+insert into stats values(13,1,2010,57.4,0.31),(13,5,2010,91.7,5.15),
+(13,12,2010,12.6,8.34),(13,9,2010,100.3,10.34),(44,9,2010,27.2,3.45),(44,2,2010,27.3,0.18),
+(44,6,2010,74.8,2.11),(66,3,2010,6.7,2.1),(66,7,2010,65.8,4.52)
+
+create table station(station_id integer,city char(10),state char(5),lat_n integer,long_w integer)
+insert into station values(13,'Phoenix','AZ',33,112),
+(44,'Denver','CO',40,105),(66,'Caribou','ME',47,68)
+
+25)Fetch publisher information who have publish_city <> author_city and check if publish_city = author_country . display the correct publisher_city along
+ with other publisher information based on author_city
+ select	p.publish_name,p.publish_city,a.author_city from publish p inner join author a
+ on a.publish_id=p.publish_id where p.publish_city <> a.author_city 
+op
+publish_name			publish_city	author_city
+Jex Max Publication		BERLIN		Cambridge
+Mark Book Sales			NEW JERSY	San Francisco
+Jex Max Publication		BERLIN		Moscow
+Novel Publisher Ltd		LONDON		Toronto
+Jex Max Publication		BERLIN		Delhi
+Novel Publisher Ltd		LONDON		Berlin
+Summer Night Publication	CANADA		Berlin
+Jex Max Publication		BERLIN		Melbourne
+
+26)Fetch authors_name, author_country, publish_city, publish_start_date, branches who have publications with most number of branches by century
+*******************
+
+27)Fetch publisher details who have authors in same city and get corresponding author details who belong to same country
+ select	p.publish_name,p.publish_city,p.publish_start_date,p.branches
+ from publish p inner join author a on a.publish_id=p.publish_id where 
+ p.publish_city=a.author_city 
+op
+publish_name		 publish_city    publish_start_date    branches
+Novel Publisher Ltd	LONDON		2018-08-10		11
+Mark Book Sales		NEW JERSY	2008-05-24		9
+
+28)Fetch authors who have incorrect author_country for same author_city. Display correct author_country along with all author_information
+***********************************
+
+29)Fetch authors who do not have publisher from their country
+select k.author_name,k.author_country,k.author_city from(
+select	a.author_name,a.author_country,a.author_city,
+case when p.publish_city='BERLIN' then 'Germany'
+ when p.publish_city='NEW JERSEY' then 'USA'
+ when p.publish_city='LONDON' then 'UK'
+else 'NORTH AMERICA'
+end as publish_country
+from publish p inner join author a on a.publish_id=p.publish_id)k where 
+k.author_country!=k.publish_country
+op
+author_name	 author_country	        author_city
+William Norton		UK		Cambridge
+C. J. Wilde		USA		San Francisco
+John Betjeman Hunter	RUSSIA		Moscow
+John Betjeman Hunter	CANADA		Toronto
+S.B.Swaminathan		INDIA		Delhi
+E. Howard		EUROPE		Berlin
+Andrew Jeff		GERMANY		Berlin
+Drek Tailor		Australia	Melbourne
+Mary Coffing		USA		New Jersy
+
+30)Fetch author details if first character of publisher name is same as author_name
+select k.author_name,k.author_country,k.author_city,k.publish_name from(
+select a.author_name,a.author_country, a.author_city,p.publish_name,
+substring(p.publish_name,1,1) as publish_fir,substring(a.author_name,1,1)as author_fir
+from author a inner join publish p on p.publish_id=a.publish_id)k where 
+k.publish_fir=k.author_fir
+op
+author_name     author_country  author_city  publish_name
+John Betjeman 	RUSSIA		Moscow		Jex Max Publication
+Mary Coffing	USA		New Jersy	Mark Book Sales
+
+31)Fetch author details who have more than one initial before their name
+select * from author where author_name like '_.%.%'
+op
+AUT002	C. J. Wilde	USA	San Francisco	PB04
+AUT005	S.B.Swaminathan	INDIA	Delhi		PB01
+
+32)Fetch author details who do not have initial in their name
+*************************
+
+33)Fetch author details who have lower case in author_name
+select k.author_name,k.author_country,k.author_city from(
+select author_name,author_country,author_city,lower(author_name)as lower from author)k
+where k.lower!=k.author_name
+op
+author_name   author_country	author_city
+
+34)Fetch author information and publisher information who have publisher with recent publish_start_date.
+select k.author_name,k.author_country,k.author_city,k.publish_id,k.publish_name,
+k.publish_city,min(k.count) from(
+select a.author_name,a.author_country,a.author_city,
+p.publish_id,p.publish_name,p.publish_city,p.publish_start_date,p.branches,
+current_date()-To_Date(p.publish_start_date,'YYYY-MM-DD') as count
+from author a inner join publish p on a.publish_id=a.publish_id)k 
+
+
+-----HARD SET-----
+
+35)Fetch count of authors belong to same continent(eg. Berlin -> Europe)
+
+36)Fetch itinerary details from CHN to NDL which are cheaper
+
+37)Fetch itinerary details from CHN to NDL which have less travel time
+
+38)Fetch itinerary details from CHN to NDL which have less dynamic pricing(assume current_date = 'Sunday')
+
+39)Fetch itinerary details from CHN to NDL which happens on same day
+
+40)Fetch itinerary details from CHN to NDL which have mimum wait time at transit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

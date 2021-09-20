@@ -1,0 +1,501 @@
+------EASY SET-----
+Create employee table
++--------+----------+---------+---------+
+| emp_id | emp_name | emp_sal | dept_id |
++--------+----------+---------+---------+
+|     10 | Vivek    |    2000 |       1 |
+|     20 | Raj      |    3000 |       1 |
+|     30 | Vinoth   |    4000 |       1 |
+|     40 | Abhishek |    5000 |       2 |
+|     50 | Divya    |    6000 |       2 |
+|     60 | Chitra   |    7000 |       3 |
++--------+----------+---------+---------+
+
+create department table
++---------+-----------+
+| dept_id | dept_name |
++---------+-----------+
+|       1 | IT        |
+|       2 | Admin     |
+|       4 | HR        |
++---------+-----------+
+
+1)Fetch all the Deptid,DeptName from department table & Corresponding Department salary using Employee  Table. If Any department is not available in 
+employee table then assign salary as 0.
+Note: Don’t use sub quesry or in or not in
+
+2)Fetch all the Deptid &  aggregate all the salary for the respective dept id from Employee table & Corresponding Department name using department Table. 
+If Any department is not available in department table then assign departname as 'Others'
+Note: Don’t use sub quesry or in or not in.
+
+create table employee1
+
++--------+----------+------------+--------+
+| emp_id | emp_name | manager_id | salary |
++--------+----------+------------+--------+
+|      1 | Vivek    |          8 |  11000 |
+|      2 | Raj      |          1 |   2000 |
+|      3 | Vinoth   |          1 |   3000 |
+|      4 | Abhishek |          2 |   5000 |
+|      5 | Divya    |          3 |   6000 |
+|      6 | Chitra   |          3 |   2350 |
+|      7 | Devi     |          3 |   2500 |
+|      8 | Aarthi   |          4 |   2700 |
++--------+----------+------------+--------+
+
+3)Fetch all the Emp_id,Emp_name,Manager_ID and salary who is getting between 2700 and 10000
+Note: Don't use  between
+
+4)Fetch all the Manager_ID,Manager_Name and Sum of the employee salary who is reporting to that manager
+Note: Don't use  between
+
+create table employee2
++--------+--------------------+
+| emp_id | emp_name           |
++--------+--------------------+
+|      1 | RajeshKumar        |
+|      2 | UdhayaRaja         |
+|      3 | Abhishek           |
+|      4 | MukeshKumar        |
+|      5 | VijayaprakashSingh |
+|      6 | Divyashree         |
++--------+--------------------+
+
+				
+5)Fetch all the emp_id & derv_Emp_Name 
+*  Derv_emp_name will be from 4th character till end of the chanracter from emp_name
+Note: Don’t use regular expression
+
+6)Fetch all the emp_id & derv_Emp_Name 
+*  Derv_emp_name will be from first occurance of 'h' till  end of the chanracter from emp_name
+Note: Don’t use regular expression
+
+7)Fetch emp_id,Emp_name & Salary who is getting 2nd maximum salar
+
+8)Fetch emp_id,Emp_name & Salary who is getting top 3 salary
+Note : Don’t use top
+
+create table employee3
+
++--------+----------+-----------+--------+
+| emp_id | emp_name | dept_name | salary |
++--------+----------+-----------+--------+
+|      1 | Vivek    | IT        |   2000 |
+|      2 | Raj      | Admin     |   3500 |
+|      3 | Vinoth   | HR        |   4800 |
+|      4 | Abhishek | IT        |   5700 |
+|      5 | Divya    | ITES      |   3000 |
+|      6 | Chitra   | HR        |   5800 |
+|      7 | Devi     | Admin     |   3200 |
++--------+----------+-----------+--------+
+		
+9)Fetch emp_id,Emp_name,Dept_name & Salary who is getting salary greater than 3000 int 'IT' and  salary greater than 3400 int 'Admin'
+
+create table employee4
+
++--------+------------+-----------+--------+
+| emp_id | emp_name   | dept_name | salary |
++--------+------------+-----------+--------+
+|      1 | Rajesh     | IT        |   2000 |
+|      2 | Ajaykumar  | Admin     |   3500 |
+|      3 | Abhishek   | HR        |   4800 |
+|      4 | Vivekkumar | IT        |   5700 |
+|      5 | Balaji     | ITES      |   3000 |
+|      6 | Raveendar  | HR        |   5800 |
+|      7 | Poornarao  | Admin     |   3200 |
++--------+------------+-----------+--------+
+		
+				
+10)Fetch emp_id,Emp_name,Dept_name & Salary who is having string 'J' in emp_name.
+
+11)Fetch emp_id,Emp_name,Dept_name & Salary who is having any of sring 'J','N','M' in emp_name.
+
+12)Fetch emp_id,Emp_name,Dept_name & Salary who is having all of sring 'B','H','E' in emp_name.
+
+create table employee5
+
++--------+---------------+---------+----------+---------+
+| emp_id | emp_name      | desc_id | place_id | proj_id |
++--------+---------------+---------+----------+---------+
+|      1 | Vijaykumar    |      10 |        1 |       3 |
+|      2 | Raja          |      20 |        3 |       4 |
+|      3 | Abhisheksingh |      10 |        4 |       5 |
+|      4 | Santosh       |      30 |        2 |       1 |
+|      5 | Kribakaran    |      20 |        3 |       2 |
+|      6 | Divya         |      40 |        5 |       3 |
+|      7 | Suganya       |      10 |        3 |       4 |
+|      8 | Shalini       |      20 |        2 |       2 |
+|      9 | Avantika      |      30 |        1 |       5 |
+|     10 | Ajay          |      50 |        6 |       8 |
+|     11 | Tamilselvan   |      60 |        7 |       6 |
+|     12 | Vinodha       |      70 |        6 |       7 |
+|     13 | Karthick      |      60 |        5 |       2 |
+|     14 | Sanjay        |      70 |        6 |       5 |
+|     15 | Meera         |      60 |        8 |       7 |
++--------+---------------+---------+----------+---------+
+
+create table designation
+
++---------+-----------+-----------+
+| desc_id | desc_name | role_typ  |
++---------+-----------+-----------+
+|      10 | ASE       | DEVELOPER |
+|      20 | SE        | DEVELOPER |
+|      30 | SSE       | DEVELOPER |
+|      40 | TL        | LEAD      |
+|      50 | AM        | LEAD      |
+|     100 | SM        | MANAGER   |
++---------+-----------+-----------+
+
+create table place
+
++----------+------------+-----------+
+| place_id | place_desc | place_typ |
++----------+------------+-----------+
+|        1 | Chennai    | Offshore  |
+|        2 | Bangalore  | Offshore  |
+|        3 | Hyderabad  | Offshore  |
+|        4 | Mexico     | Nearshore |
+|        5 | Newyork    | Onshore   |
+|       10 | Canada     | Onshore   |
++----------+------------+-----------+;
+
+create table project 
++---------+-----------+
+| proj_id | proj_name |
++---------+-----------+
+|       1 | Cigna     |
+|       2 | ASG       |
+|       3 | Pepsi     |
+|       4 | Microsoft |
+|       5 | Amazon    |
+|      10 | Flipkart  |
++---------+-----------+
+
+13) Fetch EMP_ID,EMP_NAME,DESC_NAME,PLACE_DESC,PROJ_NAME
+
+List all the employees from the employee table 
+EMP_ID
+EMP_NAME 
+DESC_NAME ---> If Designation Name is not available then show 'Unknown Designation', 
+If Designation Name  is available but if Role Type is Lead then Show 'TEAM_LEAD'  otherwise populate with out any conversion
+PLACE_DESC -- >If  Place Description is not avaible then show 'Others' , If  Place Description is available but if Place Type is newyork  then show 'USA'
+PROJ_NAME --> Designation is not avaible in Department table then show 'Unknown Project'
+
+14)Fetch EMP_ID,EMP_NAME,PROJECT_ROLE
+
+List all the employees from the employee table 
+EMP_ID
+EMP_NAME 
+PROJECT_ROLE ---> If he is a 'DEVELOPER' and working in 'OFFSHORE' then show he is a 'TEAMMEMBER' , 
+If he is a 'DEVELOPER' and working in 'NEARSHORE' then show he is a 'TEAMLEAD', If he is a 'DEVELOPER' and working in 'ONSHORE' then show he is a 'BA',
+If he is a 'LEAD' and working in 'ONSHORE' then show he is a 'SCRUMMASTER', IF he has Some Designation or Working in some place then Show as 'CONTRACTER' 
+Else Show ""SHADOW'"
+
+15) Fetch DESC_NAME,PLACE_DESC,PROJ_NAME
+List how mony employess are working as a DEVELOPER in respective PLACE and PROJECT. Also SHOW rest of count as OTHERS in all the fields
+
+16)Fetch EMPLOYEE_NAME,DESC_NAME,PLACE_DESC,PROJ_NAME
+Fetch all the Employee name, Designation , Place and project from respective tables if there is any null in respective fields then 
+show it as OTHERS in those null Fields
+
+create table customer 
++-------------+-----------+-----------+--------------+-------------+------------------+
+| customer_id | cust_name | city      | priority_num | salesman_id | purchased_Amount |
++-------------+-----------+-----------+--------------+-------------+------------------+
+|          10 | James     | Chennai   |            1 |           1 |            10000 |
+|          20 | Ricky     | Chennai   |            1 |           3 |             8000 |
+|          30 | Ramu      | Bangalore |            1 |           2 |             8000 |
+|          40 | Jyothi    | Hyderabad |            2 |           3 |             9000 |
+|          50 | Amaran    | Chennai   |            1 |           4 |             3000 |
+|          60 | Akilan    | Hyderabad |            2 |           3 |             6000 |
+|          70 | Arun      | Chennai   |            2 |           5 |             5000 |
+|          80 | Dinesh    | Mumbai    |            2 |           4 |             6000 |
++-------------+-----------+-----------+--------------+-------------+------------------+
+
+create table salesman
++-------------+---------------+-----------+------------------+----------------+
+| salesman_id | salesman_name | city      | sales_manager_id | monthly_target |
++-------------+---------------+-----------+------------------+----------------+
+|           1 | John          | Chennai   |                2 |          10000 |
+|           2 | Abraham       | Bangalore |                4 |          21000 |
+|           3 | Raju          | Hyderabad |                4 |          21000 |
+|           4 | Srinath       | Mumbai    |                5 |           9000 |
+|           5 | Vijay         | Chennai   |                6 |           4000 |
+|           6 | Balaji        | Hyderabad |                6 |          15000 |
++-------------+---------------+-----------+------------------+----------------+
+17)Fetch Salesman_Name, Cust_Name, Customer_city,Salesman_City
+Show only the customer and salesman whole belong to the different City
+
+18)Fetch Salesman_Name, City, Monthly_target, Amount_purchase_by_Customer 
+Show only the Sales Man who achieved the monthly Target
+Sum of Amount_purchase_by_Customer -- Amount purchased by corresponding customer
+
+19)Fetch Cust_Name, City,Priority_num,Purchased_amount
+Show only the customer information who is top two  purchased more in their respective priority
+Sum of Amount_purchase_by_Customer -- Amount purchased by corresponding customer
+
+20)Fetch Salesman_Name, City, Amount_purchase_by_Customer 
+Show only the Sales Man who  Amount_purchase_by_Customer is less than the avg monthly target of all sales person
+Sum of Amount_purchase_by_Customer -- Amount purchased by corresponding customer
+
+21)Fetch  Sales_Manager_Name, Salesman_Name,Manager Monthly_target,  Amount_purchase_by_Customer 
+Show only the Sales Man who's manager is achieved the monthly Target based on his reportees purchase detail
+Sum of Amount_purchase_by_Customer -- Amount purchased by customer which is sold by it reportees
+
+create table student
++------------+--------------+-------------------+
+| student_id | student_name | student_detail_id |
++------------+--------------+-------------------+
+|          1 | Ajay         |                 1 |
+|          2 | Ramesh       |                 2 |
+|          3 | Shriram      |                 3 |
+|          4 | Gopi         |                 4 |
+|          5 | Kalai        |                 5 |
+|          6 | Vinoth       |                 6 |
++------------+--------------+-------------------+
+
+create table student_details
++-------------------+---------+----------+------------+------------+
+| student_detail_id | city_id | class_id | start_date | end_date   |
++-------------------+---------+----------+------------+------------+
+|                 1 |       1 |        2 | 2018-04-01 | 2019-03-31 |
+|                 1 |       1 |        3 | 2019-04-01 | 9999-12-31 |
+|                 2 |       2 |        1 | 2018-04-01 | 2019-03-31 |
+|                 2 |       3 |        2 | 2019-04-01 | 9999-12-31 |
+|                 3 |       2 |        1 | 2017-04-01 | 2018-03-31 |
+|                 3 |       3 |        2 | 2018-04-01 | 2019-03-31 |
+|                 3 |       1 |        3 | 2019-04-01 | 9999-12-31 |
+|                 4 |       2 |        1 | 2018-04-01 | 2019-03-31 |
+|                 4 |       3 |        2 | 2019-04-01 | 9999-12-31 |
+|                 5 |       1 |        2 | 2019-04-01 | 9999-12-31 |
+|                 6 |       2 |        3 | 2019-04-01 | 9999-12-31 |
++-------------------+---------+----------+------------+------------+
+
+create table city 
++---------+-----------+
+| city_id | city_name |
++---------+-----------+
+|       1 | Chennai   |
+|       2 | Bangalore |
+|       3 | Mumbai    |
++---------+-----------+
+
+
+create table class
+
++----------+-------+---------------+------------+------------+
+| class_id | class | classroom_num | start_date | end_date   |
++----------+-------+---------------+------------+------------+
+|        1 | 10th  |           256 | 2017-04-01 | 2018-10-31 |
+|        1 | 10th  |           257 | 2018-01-11 | 2019-09-30 |
+|        1 | 10th  |           258 | 2019-01-10 | 9999-12-31 |
+|        2 | 11th  |           301 | 2017-04-01 | 2018-03-31 |
+|        2 | 11th  |           310 | 2018-04-01 | 2019-10-31 |
+|        2 | 11th  |           320 | 2019-01-11 | 9999-12-31 |
+|        3 | 12th  |           356 | 2017-04-01 | 2018-10-31 |
+|        3 | 12th  |           360 | 2018-01-11 | 2019-09-30 |
+|        3 | 12th  |           371 | 2019-01-10 | 9999-12-31 |
++----------+-------+---------------+------------+------------+
+
+22)Fetch All Student_name,City_name,Class_Name
+Show only the initial information of all the student in respective Field
+
+23)Fetch All Student_name,City_name,Class_Name,Classroom_num
+Show only the information of all the student where he stands as of today'S date
+select s.student_name,c.city_name,cl.class,cl.classroom_num from student s left join 
+student_details st on s.student_detail_id=st.student_detail_id inner join city c
+on c.city_id=st.city_id inner join class cl on cl.class_id=st.class_id
+
+
+24)Fetch All Student_name,City_name
+Show only the information of all the student who studied in Chennai or Classroom Number (301,310,320)
+
+create table author
+
++-----------+----------------------+----------------+---------------+------------+
+| author_id | author_name          | author_country | author_city   | publish_id |
++-----------+----------------------+----------------+---------------+------------+
+| AUT001    | William Norton       | UK             | Cambridge     | PB01       |
+| AUT002    | C. J. Wilde          | USA            | San Francisco | PB04       |
+| AUT003    | John Betjeman Hunter | RUSSIA         | Moscow        | PB01       |
+| AUT004    | John Betjeman Hunter | CANADA         | Toronto       | PB03       |
+| AUT005    | S.B.Swaminathan      | INDIA          | Delhi         | PB01       |
+| AUT006    | Butler Andre         | UK             | London        | PB03       |
+| AUT007    | E. Howard            | EUROPE         | Berlin        | PB03       |
+| AUT008    | Andrew Jeff          | GERMANY        | Berlin        | PB02       |
+| AUT009    | Drek Tailor          | Australia      | Melbourne     | PB01       |
+| AUT010    | Mary Coffing         | USA            | New Jersy     | PB04       |
++-----------+----------------------+----------------+---------------+------------+
+
+create table publish
++------------+--------------------------+--------------+--------------------+----------+
+| publish_id | publish_name             | publish_city | publish_start_date | branches |
++------------+--------------------------+--------------+--------------------+----------+
+| PB01       | Jex Max Publication      | BERLIN       | 1929-04-21         |       10 |
+| PB02       | Summer Night Publication | CANADA       | 2019-08-31         |       25 |
+| PB03       | Novel Publisher Ltd      | LONDON       | 2018-08-10         |       11 |
+| PB04       | Mark Book Sales          | NEW JERSY    | 2008-05-24         |        9 |
++------------+--------------------------+--------------+--------------------+----------+
+
+create table trip 
++---------+-------------+-----------+-----------------+---------------+-----------+--------------+
+| trip_id | trip_source | trip_dest | trip_start_time | trip_end_time | trip_cost | dynamic_fare |
++---------+-------------+-----------+-----------------+---------------+-----------+--------------+
+| TP01    | CHN         | BGL       | 13:40:00        | 15:40:00      |      3500 | Y            |
+| TP02    | BGL         | MUM       | 18:20:00        | 19:20:00      |      6700 | Y            |
+| TP03    | CHN         | HYD       | 09:45:00        | 11:10:00      |      3000 | Y            |
+| TP04    | HYD         | BGL       | 12:20:00        | 13:25:00      |      2700 | N            |
+| TP05    | MUM         | NDL       | 23:00:00        | 01:25:00      |      4500 | Y            |
+| TP06    | BGL         | NDL       | 19:40:00        | 22:10:00      |      5000 | N            |
+| TP07    | NDL         | MUM       | 16:45:00        | 17:50:00      |      6000 | Y            |
+| TP08    | MUM         | BGL       | 20:20:00        | 23:45:00      |      5000 | N            |
+| TP09    | NDL         | HYD       | 11:25:00        | 13:45:00      |      3000 | N            |
+| TP10    | HYD         | CHN       | 20:30:00        | 22:20:00      |      4500 | Y            |
+| TP11    | BGL         | CHN       | 23:45:00        | 01:05:00      |      3900 | Y            |
++---------+-------------+-----------+-----------------+---------------+-----------+--------------+
+
+create table stats
++----------+-------+------+-----------+-----------+
+| stats_id | month | year | temp_fare | rain_inch |
++----------+-------+------+-----------+-----------+
+|       13 |     1 | 2010 |      57.4 |      0.31 |
+|       13 |     5 | 2010 |      91.7 |      5.15 |
+|       13 |    12 | 2010 |      12.6 |      8.34 |
+|       13 |     9 | 2010 |     100.3 |     10.34 |
+|       44 |     9 | 2010 |      27.2 |      3.45 |
+|       44 |     2 | 2010 |      27.3 |      0.18 |
+|       44 |     6 | 2010 |      74.8 |      2.11 |
+|       66 |     3 | 2010 |       6.7 |       2.1 |
+|       66 |     7 | 2010 |      65.8 |      4.52 |
++----------+-------+------+-----------+-----------+
+
+create table station 
++------------+---------+-------+-------+--------+
+| station_id | city    | state | lat_n | long_w |
++------------+---------+-------+-------+--------+
+|         13 | Phoenix | AZ    |    33 |    112 |
+|         44 | Denver  | CO    |    40 |    105 |
+|         66 | Caribou | ME    |    47 |     68 |
++------------+---------+-------+-------+--------+
+
+25)Fetch publisher information who have publish_city <> author_city and check if publish_city = author_country . 
+display the correct publisher_city along with other publisher information based on author_city
+
+26)Fetch authors_name, author_country, publish_city, publish_start_date, branches who have publications with most number of branches by century
+
+27)Fetch publisher details who have authors in same city and get corresponding author details who belong to same country
+
+28)Fetch authors who have incorrect author_country for same author_city. Display correct author_country along with all author_information
+
+29)Fetch authors who do not have publisher from their country
+
+30)Fetch author details if first character of publisher name is same as author_name
+
+31)Fetch author details who have more than one initial before their name
+
+32)Fetch author details who do not have initial in their name
+
+33)Fetch author details who have lower case in author_name
+
+34)Fetch author information and publisher information who have publisher with recent publish_start_date.
+
+-----HARD SET-----
+
+35)Fetch count of authors belong to same continent(eg. Berlin -> Europe)
+
+36)Fetch itinerary details from CHN to NDL which are cheaper
+
+37)Fetch itinerary details from CHN to NDL which have less travel time
+
+38)Fetch itinerary details from CHN to NDL which have less dynamic pricing(assume current_date = 'Sunday')
+
+39)Fetch itinerary details from CHN to NDL which happens on same day
+
+40)Fetch itinerary details from CHN to NDL which have mimum wait time at transit
+
+41)Fetch return itinerary details from NDL to CHN with mimum transits
+
+42)Fetch itinerary details from CHN to BGL before 11 AM
+
+43)Fetch return itinerary details from NDL to CHN which happens on same day or which has less travel time
+
+44)Fetch trip details which have less travel time
+
+45)Fetch trip details which have high travel time and no dynamic pricing
+
+46)Fetch rows which have hottest month per city with highest rainfall
+
+47)Fetch and display rows with Station_ID, City, State, Month, Year and temp(in Celcius), rainfall (in cm)
+
+48)Display all rows for states on all quarters. If a state do not have any quarter information, default Temp in Celcius and rain in cms based on average for the year
+
+49)Which state has coldest month and highest rainfall compared to average per year
+
+50)Which city had maximum rainfall below average . Display city, state, rainfall, average information
+
+51)Which city had second  coldest month when compared to national average
+
+52)create a view based on question#48. If you query view, you should have resultset matching with question #48
+
+53)Report stations which had temperature difference < 5 C  or difference > 20 C in subsequent quarters
+
+54)Report stations which obsevered temperatures less than 0(in celcius)
+
+55)Display state information and number of times when rainfall is greater than national average
+
+------EASY SET-----
+create table project1
++---------+------------------------+
+| proj_id | proj_name              |
++---------+------------------------+
+|       1 | Neon Data & Analytics  |
+|       2 | ASG Data Warehousing   |
+|       3 | Pepsi Data Mart        |
+|       4 | Microsoft              |
+|       5 | Amazon Cloud Logistics |
+|      10 | Flipkart               |
++---------+------------------------+
+
+
+create table customer1
++-------------+-----------+-----------+--------------+-------------+------------------+
+| customer_id | cust_name | city      | priority_num | salesman_id | purchased_Amount |
++-------------+-----------+-----------+--------------+-------------+------------------+
+|          10 | James     | Chennai   |            1 |           1 |            10000 |
+|          20 | Ricky     | Chennai   |            1 |           3 |             8000 |
+|          30 | Ramu      | Bangalore |            1 |           2 |             8000 |
+|          40 | Jyothi    | Hyderabad |            2 |           3 |             9000 |
+|          50 | Amaran    | Chennai   |            1 |           4 |             3000 |
+|          60 | Akilan    | Hyderabad |            2 |           3 |             6000 |
+|          70 | Arun      | Chennai   |            2 |           5 |             5000 |
+|          80 | Dinesh    | Mumbai    |            2 |           4 |             6000 |
++-------------+-----------+-----------+--------------+-------------+------------------+
+
+create table salesman1
+
++-------------+---------------+-----------+------------------+----------------+
+| salesman_id | salesman_name | city      | sales_manager_id | monthly_target |
++-------------+---------------+-----------+------------------+----------------+
+|           1 | John          | Chennai   |                2 |          10000 |
+|           2 | Abraham       | Bangalore |                4 |          21000 |
+|           3 | Raju          | Hyderabad |                4 |          21000 |
+|           4 | Srinath       | Mumbai    |                5 |           9000 |
+|           5 | Vijay         | Chennai   |                6 |           4000 |
+|           6 | Balaji        | Hyderabad |                6 |          15000 |
++-------------+---------------+-----------+------------------+----------------+
+
+56)Fetch EMP_ID,EMP_NAME,DESC_NAME,PLACE_DESC,EMP_DESC_CNT,EMP_PLACE_CNT
+
+57)Fetch EMP_ID,EMP_NAME,DESC_NAME,PLACE_DESC,PROJ_NAME
+List All the Employees who is working in 'Data' or 'Cloud' project. 
+Note: Find Respective  keyword in project name
+
+58)Fetch EMP_NAME,PLACE_DESC
+Show only employees working as higest grade in each place, If two employees in same grade use minimum Project_id to pick one,  If two employees in same project use minimum Project_id to pick one,
+Use DESC_ID, PLACE_ID & PROJECT_ID to define Grades
+
+59)Fetch Salesman manger Name  & Customer Name 
+Show Only the Priority Customer based on the Purchased Amount
+
+60)Update the Purchased Monthly target for each sales person based on the Purchase amount 
