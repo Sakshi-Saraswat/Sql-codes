@@ -38,56 +38,94 @@ dense_rank() over(order by Salary desc)as rnk from Employee)
 where rnk<=3;
 
 2)Select the Employee with the least salary
+select* from employee where salary in(select min(salary) from employee)
+-----------------------------------
 select*,min(salary) from(
 select*,
 dense_rank() over(order by Salary desc)as rnk from Employee);
 
 3)Select the Employee who does not have a manager in the department table
 select* from(
-select a.*,b.* from Employee a Left join Dept b on a.Dep_Id = b.Dept_Id)
+select a.*,b.* from employee a Left join dept b on a.dep_id = b.dep_id)
 where dep_manager is NULL;
+---------------
+select* from employee where dep_id not in(select dep_id from dept)
 
 4)Select the Employee who is also a Manager
 select* from(
 Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
 where name=dep_manager;
+----------------------------------
+select k.e_id,k.name,k.dep_id,k.dep_manager from(
+select e.e_id, e.name,d.dep_id,d.dep_manager from employee e left join dept d
+on e.dep_id=d.dep_id)k where k.name=k.dep_manager
+-------------------------
+select distinct e.e_id,e.name,e.dep_id,e.manager_id from employee e join employee e1 on 
+e.e_id=e1.manager_id
 
 5)Select the Empolyee who is a Manager and has least salary
-select*,min(salary) from(
-Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
-where name=dep_manager;
+select new.e_id,new.name,new.dep_id,new.dep_manager,new.salary from(
+select e.e_id, e.name,d.dep_id,d.dep_manager,e.salary,dense_rank() over(order by e.salary)cnt
+ from employee e left join dept d
+on e.dep_id=d.dep_id where e.name=d.dep_manager)new where new.cnt=1
 
 6)Select the total number of Employees in Communications departments
 select*,Count(name) from(
 Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
 WHERE dep_name='COMMUNICATIONS';
+----------------------------------------
+select e.e_id,e.name, e.dep_id, d.dep_manager,d.dep_name,
+count(d.dep_name) over(order by e.e_id)cnt from employee e inner join dept d on
+e.dep_id=d.dep_id where d.dep_name='COMMUNICATIONS'
+----------------------------------------
+select count(k.dep_name),k.dep_id from(
+select e.e_id,e.name, e.dep_id, d.dep_manager,d.dep_name
+from employee e inner join dept d on
+e.dep_id=d.dep_id where d.d
 
 7)Select the Employee in Finance Department who has the top salary
 select*,max(salary) from
 (Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
 group by(Dep_Name) having Dep_Name='FINANCE';
+-------------------------------------
+select e.e_id,e.name, e.dep_id, d.dep_manager,d.dep_name,e.salary,
+dense_rank() over(order by e.salary desc)cnt from employee e inner join dept d on
+e.dep_id=d.dep_id where d.dep_name='FINANCE'
 
 8)Select the Employee in product depatment who has the least salary
 select*,min(Salary) from
 (Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
 GROUP by dep_name having Dep_Name='PRODUCT';
+-------------------------------------
+select pro.e_id,pro.dep_id,pro.dep_manager,pro.dep_name,pro.salary from(
+select e.e_id,e.name, e.dep_id, d.dep_manager,d.dep_name,e.salary,
+dense_rank() over(order by e.salary)cnt from employee e inner join dept d on
+e.dep_id=d.dep_id where d.dep_name='PRODUCT')pro where pro.cnt=1
+
 
 9)Select the count of Empolyees in Health with maximum salary
 select*,count(name),max(salary) from
 (Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
 group by(Dep_Name) having Dep_Name='HEALTH';
+---------------------------
+select pro.e_id,pro.dep_id,pro.dep_manager,pro.dep_name,pro.salary from(
+select e.e_id,e.name, e.dep_id, d.dep_manager,d.dep_name,e.salary,
+dense_rank() over(order by e.salary desc)cnt from employee e inner join dept d on
+e.dep_id=d.dep_id where d.dep_name='HEALTH')pro where pro.cnt=1
 
 10)Select the Employees who report to Natasha Stevens
 select* from(
 Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
 where dep_manager='NATASHA STEVENS';
+----------------------
+select e.e_id,e.name, e.dep_id, d.dep_manager,d.dep_name,e.salary from employee e inner join dept d on
+e.dep_id=d.dep_id where d.dep_manager='NATASHA STEVENS'
+
 
 11)Display the Employee name,Employee count,Dep name,Dept manager in the Health department
-select*,count(name) from(
-select name,dep_name,dep_manager from(
-Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
-where Dep_Name='HEALTH')
-group by name;
+Select a.name,b.dep_name,b.dep_manager,count(a.e_id) over(order by b.dep_name)
+ from Employee a inner join Dept b on a.Dep_Id=b.Dep_Id
+where b.Dep_Name='HEALTH'
 
 12)Display the Department id,Employee ids and Manager ids for the Communications department
 select Dept_id,E_id,managerid from
@@ -98,22 +136,47 @@ where Dep_Name='COMMUNICATIONS';
 select dept_id,Dep_Name,avg(Salary) from(
 Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
 group by(Dep_Id);
+-------------------------------
+select k.dep_name,k.dep_id,avg(k.salary) from(
+select e.name, e.dep_id,d.dep_name,e.salary from employee e inner join dept d on
+e.dep_id=d.dep_id)k group by k.dep_name,k.dep_id
 
 14)Select the total expense for the department finance
 select*,sum(salary) from(
 Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
 group by(Dep_Name) having  Dep_Name='FINANCE';
+-------------------------------------
+select k.dep_name,k.dep_id,sum(k.salary)as total_expense from(
+select e.name, e.dep_id,d.dep_name,e.salary from employee e inner join dept d on
+e.dep_id=d.dep_id where d.dep_name='FINANCE')k group by k.dep_name,k.dep_id
 
 15)Select the department which spends the least with Dept id and Dept manager name
 select*,min(expense) from(
 select dept_id,dep_manager,sum(salary) as expense from(
 Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
 group by dep_name);
+----------------------------
+select tab.* from(
+select new.*,dense_rank() over(order by new.total_expense)cnt  from
+(select k.dep_name,k.dep_id,sum(k.salary)as total_expense from(
+select e.name, e.dep_id,d.dep_name,e.salary from employee e inner join dept d on
+e.dep_id=d.dep_id)k group by k.dep_name,k.dep_id)new)tab where tab.cnt=1
+ 
 
 16)Select the count of Employees in each department
 select*,count(name) from(
 Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
 group by(dep_name);
+--------------------------------
+select e.e_id,e.name, e.dep_id,d.dep_name,e.salary,
+count(e.e_id) over(partition by e.dep_id order by e.salary)
+from employee e inner join dept d on
+e.dep_id=d.dep_id
+-----------------------------------
+select k.dep_name,k.dep_id,count(k.e_id) from(
+select e.e_id,e.name, e.dep_id,d.dep_name,e.salary
+from employee e inner join dept d on
+e.dep_id=d.dep_id)k group by k.dep_name,k.dep_id 
 
 17)Select the count of Employees in each department having salary <10000
 select*,count(name) from(
@@ -131,6 +194,12 @@ select*,max(total_emp) from(
 select dept_id,dep_name,dep_manager,count(name) as total_emp from
 (Select a.*,b.* from Employee a inner join Dept b on a.Dep_Id=b.Dept_Id)
 group by(Dept_Id));
+-----------------------------
+select tab.dep_name,tab.dep_id,tab.cnt from(
+select new.dep_name,new.dep_id,new.cnt,dense_rank() over(order by new.cnt desc)as val from(
+select e.dep_id,d.dep_name,count(e.e_id)as cnt
+from employee e inner join dept d on
+e.dep_id=d.dep_id group by d.dep_name,d.dep_id)new)tab where tab.val=1
 
 
 20)Select the Employees who has Tim Cook as their manager
@@ -141,32 +210,36 @@ where dep_manager='TIM COOK';
 -------------->
 set-01
 
-create table Hotel(Hotel_No varchar,Name varchar,City varchar,primary key(Hotel_No));
+create table Hotel(Hotel_No char(20),Name char(20),City char(10),primary key(Hotel_No));
 insert into Hotel(Hotel_No,Name,City) values('H111','Empire Hotel','New York'),('H235','Park Place','New York'),
 ('H432','Brownstone Hotel','Toronto'),('H498','James Plaza','Toronto'),('H193','Devon Hotel','Boston'),('H437','Clairmont Hotel','Boston');
 
-create table Room(Room_No int,Hotel_No varchar,Type varchar,Price float,primary key(Room_No),foreign key(Hotel_No) references Hotel(hotel_no));
+create table Room(Room_No integer,Hotel_No char(10),Type char(2),Price integer,primary key(Room_No),foreign key(Hotel_No) references Hotel(Hotel_no));
 insert into Room(Room_No,Hotel_No,Type,Price) values(313,'H111','S',145.00),(412,'H111','N',145.00),(1267,'H235','N',175.00),(1289,'H235','N',195.00),
 (876,'H432','S',124.00),(898,'H432','S',124.00),(345,'H498','N',160.00),(467,'H498','N',180.00),(1001,'H193','S',150.00),(1201,'H193','N',175.00),
 (257,'H437','N',140.00),(223,'H437','N',155.00);
 
-create table Booking(Hotel_No varchar,Guest_No varchar,Date_From date,Date_To date,Room_No int,primary key(Guest_No),foreign key(Room_No) 
-references Room(Room_No),foreign key(Hotel_No) references Hotel(Hotel_No));
-insert into Booking(Hotel_No,Guest_No,Date_From,Date_To,Room_No) values('H111','G256','10-Aug-99','15-Aug-99',412),('H111','G367','18-Aug-99','21-Aug-99',412),
-('H235','G879','05-Sep-99','12-sep-99',1267),('H498','G230','15-Sep-99','18-Sep-99',467),('H498','G467','30-Nov-99','02-Dec-99',345),
-('H498','G567','03-Nov-99','05-Nov-99',345),('H193','G192','15-Nov-99','19-Nov-99',1001),('H193','G357','12-Sep-99','14-Sep-99',1001),
-('H193','G667','01-Oct-99','06-Oct-99',1201),('H437','G190','04-Oct-99','06-Oct-99',223);
+create table Booking(Hotel_No char(5),Guest_No char(5),Date_From date,Date_To date,Room_No integer,
+primary key(Guest_No),foreign key(Room_No) references Room(Room_No),foreign key(Hotel_No) references Hotel(Hotel_No));
+insert into Booking(Hotel_No,Guest_No,Date_From,Date_To,Room_No)
+ values('H111','G256','1999-08-10','1999-08-15',412),('H111','G367','1999-08-18','1999-08-21',412),('H235','G879','1999-09-05','1999-09-12',1267),
+('H498','G230','1999-09-15','1999-09-18',467),('H498','G467','1999-11-30','1999-11-02',345),('H498','G567','1999-11-03','1999-11-05',345),
+('H193','G192','1999-11-15','1999-11-19',1001),('H193','G357','1999-09-12','1999-09-14',1001),('H193','G667','1999-10-01','1999-10-06',1201),
+('H437','G190','1999-10-04','1999-10-06',223);
 
-create table Guest(Guest_No varchar,Name varchar,City varchar,foreign key(Guest_No) REFERENCES Booking(Guest_No));
+
+create table Guest(Guest_No char(5),Name char(20),City char(20),foreign key(Guest_No) REFERENCES Booking(Guest_No));
 insert into Guest(Guest_No,Name,City) values('G256','Adam Wayne','Pittsburg'),('G367','Tara Cummings','Baltimore'),('G879','Vanessa Parry','Pittsburg'),
 ('G230','Tom Hancock','Philadelphia'),('G467','Robert Swift','Atlanta'),('G190','Edward Cane','Baltimore');
 
 -------->
 
 1)List full details of all hotels.
-select * from Hotel h inner join room r on h.hotel_no=r.hotel_no
-inner join Booking b on r.Room_No=b.Room_No
-inner join Guest g on g.guest_no=b.Guest_No;
+select h.hotel_no,h.name,h.city,r.room_no,r.type,r.price,
+g.guest_no,b.date_from,b.date_to,g.name,g.city
+ from Hotel h left join room r on h.hotel_no=r.hotel_no
+left join Booking b on r.Room_No=b.Room_No and h.hotel_no=b.hotel_no
+left join Guest g on g.guest_no=b.Guest_No;
 
 Hote_No	Name		City		Room_No	Hotel_	 Type	Price	2	Guest_	Date_From	Date_To		Room_No	Guest_	Name		City
 H111	Empire Hotel	New York	412	H111	N	145	H111	G256	10-Aug-99	15-Aug-99	412	G256	Adam Wayne	Pittsburg
@@ -177,11 +250,12 @@ H498	James Plaza	Toronto		345	H498	N	160	H498	G467	30-Nov-99	02-Dec-99	345	G467	
 H437	Clairmont Hotel	Boston		223	H437	N	155	H437	G190	04-Oct-99	06-Oct-99	223	G190	Edward Cane	Baltimore
 
 2)List full details of all hotels in New York.
-select* from 
-(select * from Hotel h inner join room r on h.hotel_no=r.hotel_no
-inner join Booking b on r.Room_No=b.Room_No
-inner join Guest g on g.guest_no=b.Guest_No)
-where City='New York';
+select h.hotel_no,h.name,h.city,r.room_no,r.type,r.price,
+g.guest_no,b.date_from,b.date_to,g.name,g.city
+from Hotel h left join room r on h.hotel_no=r.hotel_no
+left join Booking b on r.Room_No=b.Room_No and h.hotel_no=b.hotel_no
+left join Guest g on g.guest_no=b.Guest_No
+where h.city='New York';
 
 H111	Empire Hotel	New York	412	H111	N	145	H111	G256	10-Aug-99	15-Aug-99	412	G256	Adam Wayne	Pittsburg
 H111	Empire Hotel	New York	412	H111	N	145	H111	G367	18-Aug-99	21-Aug-99	412	G367	Tara Cummings	Baltimore
@@ -200,7 +274,9 @@ Vanessa Parry	Pittsburg
 
 
 4)List all details for non-smoking rooms in ascending order of price.
-SELECT* from Room where type='N' order by price;
+SELECT h.name,h.city,r.Hotel_No,r.Room_No,r.type,r.Price from Hotel h inner join Room r
+on h.Hotel_No=r.Hotel_No 
+where r.type='N' order by r.Price;
 
 Room_No	Hotel_NO Type 	Price
 257	H437	 N	140
@@ -214,7 +290,7 @@ Room_No	Hotel_NO Type 	Price
 
 
 5)List the number of hotels there are.
-select*,count(name) from Hotel group by name;
+select Hotel_No, Name, City,count(name) from Hotel group by Hotel_No, Name, City;
 
 Hotel_No   Name           City		Count(name)
 H432	Brownstone Hotel  Toronto	1
@@ -226,7 +302,7 @@ H235	Park Place	  New York	1
 
 
 6)List the cities in which guests live. Each city should be listed only once.
-select city,count(city) from Guest group by city;
+select distinct city from Guest
 
 City		count(city)
 Atlanta		1
@@ -236,7 +312,7 @@ Pittsburg	2
 
 
 7)List the average price of a room.
-select hotel_no,avg(Price) from Room group by Hotel_No;
+select Hotel_No,avg(Price) from Room group by Hotel_No;
 
 hotel_no 	avg(price)
 H111		145
@@ -274,14 +350,19 @@ Empire Hotel	412	18-Aug-99	21-Aug-99
 Park Place	1267	05-Sep-99	12-sep-99
 
 10)What is the number of bookings that started in the month of September?
-SELECT Date_From,count(*) as total_Bookings from Booking where date_from like '%Sep%';
+SELECT 
+Hotel_No, Guest_No, Date_From, Date_To, Room_No,
+count(Room_No) over(order by hotel_No)
+ as total_Bookings from Booking where date_from like '_____09%';
+
 
 date_from	total_bookings
 12-Sep-99	3
 
 11)List the names and cities of guests who began a stay in New York in August.
-select g.name,g.city,b.date_from,h.City from Guest g inner join Booking b on b.guest_no=g.guest_no 
-inner join Hotel h on h.hotel_no=b.Hotel_No where b.date_from LIKE '%AUG%' and h.city='New York';
+select g.name,g.city from Guest g inner join Booking b on b.guest_no=g.guest_no 
+inner join Hotel h on h.hotel_no=b.Hotel_No where b.date_from LIKE '_____08%' and h.city='New York';
+
 
 name		city		date_from	City
 Adam Wayne	Pittsburg	10-Aug-99	New York
@@ -289,35 +370,41 @@ Tara Cummings	Baltimore	18-Aug-99	New York
 
 
 12)List the hotel names and room numbers of any hotel rooms that have not been booked.
-select Name,l.Room_No from(
-select* from Hotel h inner join Room r on h.Hotel_No=r.Hotel_No)as l
-left outer join Booking b on b.hotel_no=l.hotel_no where b.Hotel_No is null;
+select h.Name,r.Room_No
+from hotel h inner join room r 
+on h.hotel_no=r.hotel_no 
+left join booking b on  r.room_no=b.room_no where b.Guest_No is null
+
 
 Name			Room_No
 Brownstone Hotel	876	
 Brownstone Hotel	898	
 
 13)List the hotel name and city of the hotel with the highest priced room.
-select h.name,h.city,max(price) from Hotel h inner join Room r on r.hotel_no=h.Hotel_No;
+select k.name,k.city,k.price from(
+select h.name,h.city,r.price,r.room_no,dense_rank() over(order by r.price desc)as ct
+from Hotel h inner join Room r
+on r.hotel_no=h.Hotel_No)k
+where k.ct=1
+
+
 
 name		city		max(price)
 Park Place	New York	195
 
 
 14)List hotel names, room numbers, cities, and prices for hotels that have rooms with prices lower than the lowest priced room in a Boston hotel.
-select* from(
-select*,min(Price) from (
-select h.name,r.room_No,h.city,r.price from Hotel h,Room r where r.hotel_no=h.hotel_no)
-group by City);
-
+select h.name,h.city,r.Price,r.room_no from Hotel h inner join Room r 
+on r.hotel_no=h.hotel_no where r.Price<
+(select min(r.Price) from Hotel h inner join Room r 
+on r.hotel_no=h.hotel_no where h.city='Boston')
 name			room_no	  city   price	min(price)
 Brownstone Hotel	876	Toronto	 124	124
 	
 15)List the average price of a room grouped by city.
-select*,avg(Price) from 
-(select h.city,r.Price from Hotel h inner join Room r on r.hotel_no=h.hotel_no)
-group by City
-
+select k.City,avg(k.Price) from 
+(select h.city,r.Price,r.room_no from Hotel h inner join Room r on r.hotel_no=h.hotel_no)k
+group by k.City
 city		price	avg(price)
 Boston		155	155
 New York	195	165
@@ -946,6 +1033,11 @@ Jex Max Publication		BERLIN		Melbourne
 
 26)Fetch authors_name, author_country, publish_city, publish_start_date, branches who have publications with most number of branches by century
 *******************
+select a.author_name,a.author_country,p.publish_city, p.publish_start_date,p.branches,
+sum(p.branches) over(partition by p.publish_start_date)as cnt
+from author a inner join publish p on a.publish_id=p.publish_id
+
+
 
 27)Fetch publisher details who have authors in same city and get corresponding author details who belong to same country
  select	p.publish_name,p.publish_city,p.publish_start_date,p.branches
@@ -1019,7 +1111,13 @@ from author a inner join publish p on a.publish_id=a.publish_id)k
 
 -----HARD SET-----
 
-35)Fetch count of authors belong to same continent(eg. Berlin -> Europe)
+35)Fetch count of authors belong to same continent(eg. Berlin)
+select author_name,rank() over(partition by author_city order by author_name)as cnt from author 
+where author_city='Berlin'
+op
+author_name    cnt
+Andrew Jeff	1
+E. Howard	2
 
 36)Fetch itinerary details from CHN to NDL which are cheaper
 
@@ -1031,19 +1129,62 @@ from author a inner join publish p on a.publish_id=a.publish_id)k
 
 40)Fetch itinerary details from CHN to NDL which have mimum wait time at transit
 
+set-03
+
+create table Movie(mID integer,title char(30),year integer,director char(20))
+insert into Movie values(101,'Gone with the winds',1939,'Victor Fleming'),(102,'Star Wars',1977,'George Lucas'),
+(103,'The sound of Music',1965,'Robert Wise'),(104,'E.T.',1982,'Steven Spielberg'),(105,'Titanic','1997,'James Cameron'),
+(106,'Snow White',1937,NULL),(107,'Avatar',2009,'James Cameron'),(108,'Raiders of the Lost Ark',1981,'Steven Spielberg)
+
+create table Reviewer(rID integer, name char(30)) 
+insert into Reviewer values(201,'Sarah Martinez'),(202,'Daniel Lewis'),(203,'Brittany Harris'),(204,'Mike Anderson'),
+(205,'Chris Jackson'),(206,Elizabeth Thomas'),(207,'James Cameron'),(208,'Ashley White')
+
+create table Rating(rID integer,mID integer,stars integer,ratingDate Date)
+insert into Rating values()
 
 
+set-04
 
+create table highschooler(Id integer,name char(10),Grade integer);
+insert into highschooler values(1510,'Jordan',9),(1689,'Gabriel',9),(1381,'Tiffany',9),(1709,'Cassandra',9),
+(1101,'Haley',10),(1782,'Andrew',10),(1468,'Kris',10),(1641,'Brittany',10),(1247,'Alexis',11),
+(1316,'Austin',11),(1911,'Gabriel',11),(1501,'Jessica',11),(1304,'Jordan',12),(1025,'John',12),
+(1934,'Kyle',12),(1661,'Logan',12)
 
+create table Friend(Id1 integer,Id2 integer)
+insert into Friend values(1510,1381),(1510,1689),(1689,1709),(1381,1247),(1709,1247),(1689,1782),(1782,1468),
+(1782,1316),(1782,1304),(1468,1104),(1468,1641),(1101,1641),(1247,1911),(1247,1501),(1911,1501),(1501,1934),
+(1316,1934),(1934,1304),(1304,1661),(1661,1025),(1381,1510),(1689,1510),(1709,1689),(1247,1381),(1247,1709),(1782,1689),
+(1468,1782),(1316,1782),
+(1304,1782),(1101,1468),(1641,1468),(1641,1101),(1911,1247),(1501,1247),(1501,1911),(1934,1501),(1934,1316),(1304,1934),
+(1661,1304),(1025,1661)
 
+create table Likes(Id1 integer,Id2 integer)
+insert into Likes values(1689,1709),(1709,1689),(1782,1709),(1911,1247),(1247,1468),(1641,1468),(1316,1304),
+(1501,1934),(1934,1501),(1025,1101)
 
+1)Find the names of all students who are friends with someone named Gabriel.
+->
+select distinct h.name from highschooler h inner join
+(select derv.Id,f.Id1,f.Id2 from friend f inner join 
+(select Id,name from highschooler where name='Gabriel')derv
+ on f.Id1=derv.Id or f.Id2=derv.Id
+ )derv1 on 
+ case
+ when derv1.Id=derv1.Id2 then derv1.Id1=h.Id
+ else derv1.Id2=h.Id
+ end
 
-
-
-
-
-
-
+2)For every student who likes someone 2 or more grades younger than themselves, return that student's name and grade, and the name
+ and grade of the student they like.
+->
+select distinct derv.name,derv.Grade,derv.name1,derv.Grade1 from(
+select k.*,h.name as name1,h.grade as grade1 from highschooler h inner join(
+select h.*,l.* from highschooler h inner join likes l on h.Id=l.Id1 or h.Id=l.Id2)k 
+on case when k.Id=k.Id1 then k.Id2=h.Id
+else k.Id1=h.Id
+end)derv where derv.Grade-derv.Grade1>=2
 
 
 
